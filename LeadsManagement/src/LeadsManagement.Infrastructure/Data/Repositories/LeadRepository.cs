@@ -5,12 +5,12 @@ using LeadsManagement.Domain.Enums;
 using LeadsManagement.Infrastructure.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-/// <summary>
-/// Repositório específico para entidade Lead
-/// Implementa operações específicas de Lead
-/// </summary>
+// Repositório específico para entidade Lead
+// Implementa operações específicas de Lead
+
 public class LeadRepository : RepositoryBase<Lead>
 {
+    public LeadRepository() : base(null!) { }
     public LeadRepository(ApplicationDbContext context) : base(context)
     {
     }
@@ -18,7 +18,7 @@ public class LeadRepository : RepositoryBase<Lead>
     /// <summary>
     /// Busca todos os leads com um status específico
     /// </summary>
-    public async Task<IEnumerable<Lead>> GetLeadsByStatusAsync(LeadStatus status)
+    public virtual async Task<IEnumerable<Lead>> GetLeadsByStatusAsync(LeadStatus status)
     {
         return await DbSet
             .Where(x => x.Status == status)

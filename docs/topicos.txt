@@ -1,0 +1,47 @@
+* Criação de uma interface de usuário para gerenciamento de Leads para uma empresa
+
+*** Aplicativo de Página Única (Single Page Application - SPA)
+*** Estrutura JS em React ou Angular
+*** .NET Core 6 API (RESTful)
+*** Banco de Dados SQL Server
+*** ORM (EF) Object-Relational Mapping - Entity Framework
+
+
+** Primeira Visualização: Guia Invited
+
+*** Contém todos os Leads no novo status
+*** Cada lead é um cartão em uma lista que contém:
+    • Contact first name
+    • Date created
+    • Suburb
+    • Category
+    • ID
+    • Description
+    • Price
+*** Botões de "Accept" e "Decline":
+
+**** Accept:
+    • o lead é atualizado para "aceito" no banco de dados
+    • desconto de 10% caso valor seja > U$ 500
+    • após aceitação enviar e-mail para vendas@test.com (pode ser envio falso)
+
+**** Decline:
+    • o lead é atualizado para o status de "recusado" no banco de dados
+
+
+** Segunda Visualização: Guia Accepted
+
+*** Cada lead/cartão é semelhante ao da guia invited, porém com os adicionais:
+    • Contact full name
+    • Contact phone number
+    • Contact email
+
+
+** Ícones na interface do usuário: usar ícones font-awesome ou SVG
+
+** Bom de Ter (Avançado)
+    • CQRS com MediatR
+    • Seguir os princípios DDD para lógica de negócios (Design Dirigido por Domínio)
+
+** Bom de Ter (Super Avançado)
+    •Usar EventSourcing

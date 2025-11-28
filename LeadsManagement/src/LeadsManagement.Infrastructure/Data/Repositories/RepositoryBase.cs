@@ -11,49 +11,58 @@ using Microsoft.EntityFrameworkCore;
 /// <typeparam name="TEntity">Tipo da entidade</typeparam>
 public class RepositoryBase<TEntity> : IRepository<TEntity> where TEntity : class
 {
-    protected readonly ApplicationDbContext Context;
-    protected readonly DbSet<TEntity> DbSet;
+    protected readonly ApplicationDbContext? Context;
+    protected readonly DbSet<TEntity>? DbSet;
+
+    public RepositoryBase() { }
 
     public RepositoryBase(ApplicationDbContext context)
     {
-        Context = context;
-        DbSet = context.Set<TEntity>();
+        if (context != null)
+        {
+            Context = context;
+            DbSet = context.Set<TEntity>();
+        }
     }
 
     public virtual async Task<TEntity?> GetByIdAsync(int id)
     {
-        return await DbSet.FindAsync(id);
+        return Context == null ? null : await DbSet!.FindAsync(id);
     }
 
     public virtual async Task<IEnumerable<TEntity>> GetAllAsync()
     {
-        return await DbSet.ToListAsync();
+        return Context == null ? new List<TEntity>() : await DbSet!.ToListAsync();
     }
 
     public virtual async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> predicate)
     {
-        return await DbSet.Where(predicate).ToListAsync();
+        return Context == null ? new List<TEntity>() : await DbSet!.Where(predicate).ToListAsync();
     }
 
     public virtual async Task AddAsync(TEntity entity)
     {
-        await DbSet.AddAsync(entity);
+        if (Context != null)
+            await DbSet!.AddAsync(entity);
     }
 
     public virtual async Task UpdateAsync(TEntity entity)
     {
-        DbSet.Update(entity);
+        if (Context != null)
+            DbSet!.Update(entity);
         await Task.CompletedTask;
     }
 
     public virtual async Task DeleteAsync(TEntity entity)
     {
-        DbSet.Remove(entity);
+        if (Context != null)
+            DbSet!.Remove(entity);
         await Task.CompletedTask;
     }
 
     public virtual async Task SaveChangesAsync()
     {
-        await Context.SaveChangesAsync();
+        if (Context != null)
+            await Context.SaveChangesAsync();
     }
 }

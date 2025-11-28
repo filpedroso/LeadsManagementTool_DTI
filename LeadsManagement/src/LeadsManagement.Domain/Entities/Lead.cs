@@ -2,15 +2,10 @@ namespace LeadsManagement.Domain.Entities;
 
 using Enums;
 using ValueObjects;
-using Events;
 
-/// <summary>
-/// Entidade agregada Lead - Representa um lead de venda
-/// Contém toda a lógica de negócio relacionada a leads
-/// </summary>
+// Entidade Lead -> 
 public class Lead
 {
-    // Properties
     public int Id { get; private set; }
 
     public Contact Contact { get; private set; }
@@ -27,11 +22,7 @@ public class Lead
 
     public LeadStatus Status { get; private set; }
 
-    // Domain Events
-    private readonly List<DomainEvent> _domainEvents = new();
-    public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
-
-    // Constructors
+    // Construtores
     private Lead() { }
 
     public Lead(
@@ -50,48 +41,24 @@ public class Lead
         DateCreated = DateTime.UtcNow;
     }
 
-    // Business Methods
-    /// <summary>
-    /// Aceita o lead e aplica desconto se preço > $500
-    /// </summary>
+    // Aplica desconto se preço > $500
     public void Accept()
     {
         if (Status != LeadStatus.Invited)
             throw new InvalidOperationException($"Cannot accept a lead with status {Status}");
 
-        // Lógica de negócio: aplicar 10% de desconto se preço > $500
         if (Price.Amount > 500)
         {
-            Price = Price.ApplyDiscount(0.10m); // 10% desconto
+            Price = Price.ApplyDiscount(0.10m);
         }
-
         Status = LeadStatus.Accepted;
-
-        // Adicionar evento de domínio
-        _domainEvents.Add(new LeadAcceptedEvent(
-            leadId: Id,
-            finalPrice: Price.Amount,
-            discountApplied: Price.Amount < new Money(Price.Amount / 0.9m).Amount,
-            occurredAt: DateTime.UtcNow));
     }
 
-    /// <summary>
-    /// Recusa o lead
-    /// </summary>
     public void Decline()
     {
         if (Status != LeadStatus.Invited)
             throw new InvalidOperationException($"Cannot decline a lead with status {Status}");
 
         Status = LeadStatus.Declined;
-
-        _domainEvents.Add(new LeadDeclinedEvent(
-            leadId: Id,
-            occurredAt: DateTime.UtcNow));
     }
-
-    /// <summary>
-    /// Limpa os eventos de domínio após processá-los
-    /// </summary>
-    public void ClearDomainEvents() => _domainEvents.Clear();
 }
