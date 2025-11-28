@@ -1,0 +1,6 @@
+@LeadsManagement.API_HostAddress = http://localhost:5192
+
+GET {{LeadsManagement.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

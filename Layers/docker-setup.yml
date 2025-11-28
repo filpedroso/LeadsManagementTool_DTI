@@ -1,0 +1,621 @@
+// ===================================================================
+// FILE: docker-compose.yml
+// ===================================================================
+
+version: '3.8'
+
+services:
+  # SQL Server Database
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: leads_sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "YourPassword123!"
+      MSSQL_PID: "Express"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P YourPassword123! -Q 'SELECT 1' || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - leads_network
+
+  # .NET Core API
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: leads_api
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: https://+:7000
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "password"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=LeadsManagementDb;User Id=sa;Password=YourPassword123!;TrustServerCertificate=true;"
+    ports:
+      - "7000:7000"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    volumes:
+      - ${USERPROFILE}/.aspnet/https:/https:ro
+      - ./src:/app/src
+    networks:
+      - leads_network
+
+  # React Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: leads_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_API_BASE_URL: https://localhost:7000/api/v1
+    depends_on:
+      - api
+    volumes:
+      - ./frontend/src:/app/src
+    networks:
+      - leads_network
+
+volumes:
+  sqlserver_data:
+
+networks:
+  leads_network:
+    driver: bridge
+
+// ===================================================================
+// FILE: Dockerfile (API)
+// ===================================================================
+
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /app
+
+# Copy solution and project files
+COPY ["LeadsManagement.sln", "."]
+COPY ["src/LeadsManagement.API/LeadsManagement.API.csproj", "src/LeadsManagement.API/"]
+COPY ["src/LeadsManagement.Application/LeadsManagement.Application.csproj", "src/LeadsManagement.Application/"]
+COPY ["src/LeadsManagement.Domain/LeadsManagement.Domain.csproj", "src/LeadsManagement.Domain/"]
+COPY ["src/LeadsManagement.Infrastructure/LeadsManagement.Infrastructure.csproj", "src/LeadsManagement.Infrastructure/"]
+
+# Restore dependencies
+RUN dotnet restore "LeadsManagement.sln"
+
+# Copy source code
+COPY . .
+
+# Build
+RUN dotnet build "LeadsManagement.sln" -c Release -o /app/build
+
+# Publish
+RUN dotnet publish "src/LeadsManagement.API/LeadsManagement.API.csproj" -c Release -o /app/publish
+
+# Runtime stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+COPY --from=build /app/publish .
+
+# Generate self-signed certificate
+RUN apt-get update && apt-get install -y openssl
+RUN openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost"
+RUN openssl pkcs12 -export -in cert.pem -inkey key.pem -out aspnetapp.pfx -passout pass:password
+
+ENTRYPOINT ["dotnet", "LeadsManagement.API.dll"]
+
+// ===================================================================
+// FILE: frontend/Dockerfile
+// ===================================================================
+
+# Build stage
+FROM node:18-alpine AS build
+WORKDIR /app
+
+COPY package*.json ./
+RUN npm install
+
+COPY . .
+RUN npm run build
+
+# Production stage
+FROM node:18-alpine
+WORKDIR /app
+
+RUN npm install -g serve
+
+COPY --from=build /app/dist ./dist
+
+EXPOSE 3000
+CMD ["serve", "-s", "dist", "-l", "3000"]
+
+// ===================================================================
+// FILE: .gitignore
+// ===================================================================
+
+/*
+# IDE
+.vs/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build output
+bin/
+obj/
+dist/
+build/
+
+# Dependencies
+node_modules/
+packages/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database
+*.mdf
+*.ldf
+
+# Logs
+logs/
+*.log
+
+# Runtime
+/emails/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Package manager locks
+package-lock.json
+yarn.lock
+*/
+
+// ===================================================================
+// FILE: INSTALL_GUIDE.md
+// ===================================================================
+
+/*
+# 📚 GUIA DE INSTALAÇÃO - Leads Management System
+
+## Pré-requisitos
+
+- **.NET 6 SDK** - https://dotnet.microsoft.com/download/dotnet/6.0
+- **SQL Server 2022 Express** - https://www.microsoft.com/pt-br/sql-server/sql-server-downloads
+- **Node.js 18+** - https://nodejs.org/
+- **Git** - https://git-scm.com/
+- **Docker** (opcional) - https://www.docker.com/
+
+## Instalação Local (Sem Docker)
+
+### 1. Backend Setup
+
+\`\`\`bash
+# Clone o repositório
+git clone <seu-repositorio-url>
+cd LeadsManagement
+
+# Restaurar dependências
+dotnet restore
+
+# Aplicar migrações (cria o banco de dados)
+cd src/LeadsManagement.Infrastructure
+dotnet ef database update --startup-project ../LeadsManagement.API
+
+# Rodar a API
+cd ../LeadsManagement.API
+dotnet run
+\`\`\`
+
+A API estará disponível em: https://localhost:7000
+
+### 2. Frontend Setup
+
+\`\`\`bash
+# Em outra aba do terminal
+cd frontend
+
+# Instalar dependências
+npm install
+
+# Rodar servidor de desenvolvimento
+npm run dev
+\`\`\`
+
+O frontend estará disponível em: http://localhost:3000
+
+## Instalação com Docker
+
+\`\`\`bash
+# Build e rodar todos os serviços
+docker-compose up -d
+
+# Acompanhar logs
+docker-compose logs -f
+
+# Parar serviços
+docker-compose down
+\`\`\`
+
+## Connection String do Banco de Dados
+
+**Desenvolvimento (Local):**
+\`\`\`
+Server=.;Database=LeadsManagementDb;Trusted_Connection=true;TrustServerCertificate=true;
+\`\`\`
+
+**Docker:**
+\`\`\`
+Server=sqlserver,1433;Database=LeadsManagementDb;User Id=sa;Password=YourPassword123!;TrustServerCertificate=true;
+\`\`\`
+
+## Verificar Emails Simulados
+
+Os emails simulados são salvos em: `src/LeadsManagement.API/emails/`
+
+## Rodar Testes
+
+\`\`\`bash
+# Executar todos os testes
+dotnet test
+
+# Com cobertura
+dotnet test /p:CollectCoverage=true
+\`\`\`
+
+## Troubleshooting
+
+### Erro de certificado HTTPS
+Se receber erro de certificado SSL:
+
+\`\`\`bash
+dotnet dev-certs https --clean
+dotnet dev-certs https --trust
+\`\`\`
+
+### Banco de dados não é criado
+Verificar se SQL Server está rodando:
+
+\`\`\`bash
+# No SSMS, conectar a (.) ou localhost
+\`\`\`
+
+### Frontend não conecta na API
+Verificar se CORS está habilitado no appsettings.Development.json
+
+### Docker com permissões
+Em Linux/Mac, pode ser necessário:
+
+\`\`\`bash
+sudo docker-compose up -d
+\`\`\`
+*/
+
+// ===================================================================
+// FILE: ARCHITECTURE.md
+// ===================================================================
+
+/*
+# 🏗️ ARQUITETURA DO PROJETO
+
+## Clean Architecture + Vertical Slices
+
+Este projeto segue padrões modernos de desenvolvimento:
+
+### Camadas
+
+#### 1. **Domain Layer** (LeadsManagement.Domain)
+- Entidades e Value Objects puros
+- Lógica de negócio central
+- Sem dependências externas
+- Altamente testável
+
+\`\`\`
+Domain/
+├── Entities/
+│   └── Lead.cs (Agregado raiz)
+├── ValueObjects/
+│   ├── Money.cs
+│   └── Contact.cs
+├── Enums/
+│   └── LeadStatus.cs
+└── Events/
+    ├── LeadAcceptedEvent.cs
+    └── LeadDeclinedEvent.cs
+\`\`\`
+
+#### 2. **Application Layer** (LeadsManagement.Application)
+- CQRS (Commands & Queries)
+- DTOs (Data Transfer Objects)
+- Handlers usando MediatR
+- Lógica de aplicação
+
+\`\`\`
+Application/
+├── Common/
+│   ├── Models/
+│   │   ├── Result.cs
+│   │   └── ApiException.cs
+│   └── Interfaces/
+├── Features/
+│   └── Leads/
+│       ├── Commands/
+│       ├── Queries/
+│       ├── DTOs/
+│       └── Validators/
+\`\`\`
+
+#### 3. **Infrastructure Layer** (LeadsManagement.Infrastructure)
+- Entity Framework Core (ORM)
+- Repositórios
+- Serviços (Email, Logging)
+- Configurações de BD
+
+\`\`\`
+Infrastructure/
+├── Data/
+│   ├── Contexts/ApplicationDbContext.cs
+│   ├── Configurations/
+│   ├── Migrations/
+│   └── Repositories/
+└── Services/
+    └── EmailService.cs
+\`\`\`
+
+#### 4. **Presentation Layer** (LeadsManagement.API)
+- Controllers ASP.NET Core
+- Middleware
+- Configurações de DI
+- Program.cs
+
+\`\`\`
+API/
+├── Controllers/LeadsController.cs
+├── Middleware/ErrorHandlingMiddleware.cs
+├── Extensions/ServiceCollectionExtensions.cs
+├── Program.cs
+└── appsettings.json
+\`\`\`
+
+### Padrões Utilizados
+
+#### CQRS (Command Query Responsibility Segregation)
+- Separa leitura de escrita
+- Commands modificam estado
+- Queries apenas consultam
+
+#### Repository Pattern
+- Abstração do acesso a dados
+- Facilita testes e manutenção
+
+#### Dependency Injection
+- IoC Container nativo do ASP.NET Core
+- Registrado em ServiceCollectionExtensions
+
+#### Value Objects
+- Imutáveis
+- Encapsulam lógica de domínio
+- Exemplo: Money, Contact
+
+#### Domain Events
+- Comunicação entre agregados
+- Desacoplamento de componentes
+
+### Fluxo de Requisição
+
+\`\`\`
+Cliente (React)
+    ↓
+HTTP Request
+    ↓
+Controller (LeadsController)
+    ↓
+MediatR
+    ↓
+Handler (AcceptLeadCommandHandler)
+    ↓
+Domain Logic (Lead.Accept())
+    ↓
+Repository (LeadRepository)
+    ↓
+Entity Framework Core
+    ↓
+SQL Server
+    ↓
+Response (JSON)
+\`\`\`
+
+### Regras de Negócio Implementadas
+
+1. **Desconto Automático**: Leads com preço > $500 recebem 10% de desconto ao aceitar
+2. **Notificação por Email**: Ao aceitar, envia email para vendas@test.com
+3. **Status Management**: Leads começam como "Invited", podem ir para "Accepted" ou "Declined"
+4. **Imutabilidade de Status**: Uma vez "Accepted" ou "Declined", não pode mudar
+
+### Testing Strategy
+
+- **Unit Tests**: Lógica de domínio (LeadTests)
+- **Integration Tests**: Handlers e repositórios
+- **Padrão AAA**: Arrange, Act, Assert
+- **Mocks**: Isolar dependências externas
+*/
+
+// ===================================================================
+// FILE: API_DOCUMENTATION.md
+// ===================================================================
+
+/*
+# 📖 DOCUMENTAÇÃO DA API
+
+## Base URL
+\`\`\`
+https://localhost:7000/api/v1
+\`\`\`
+
+## Endpoints
+
+### 1. Listar Leads por Status
+\`\`\`
+GET /leads/status/{status}
+\`\`\`
+
+**Parâmetros:**
+- \`status\` (string): "Invited", "Accepted" ou "Declined"
+
+**Resposta (200 OK):**
+\`\`\`json
+[
+  {
+    "id": 1,
+    "contactFirstName": "João",
+    "contactLastName": "Silva",
+    "contactEmail": "joao@email.com",
+    "contactPhoneNumber": "11999999999",
+    "dateCreated": "2025-11-27T10:30:00Z",
+    "suburb": "São Paulo",
+    "category": "Tecnologia",
+    "description": "Venda de software",
+    "price": 900.00,
+    "status": "Accepted"
+  }
+]
+\`\`\`
+
+### 2. Buscar Lead Específico
+\`\`\`
+GET /leads/{id}
+\`\`\`
+
+**Parâmetros:**
+- \`id\` (int): ID do lead
+
+**Resposta (200 OK):**
+\`\`\`json
+{
+  "id": 1,
+  "contactFirstName": "João",
+  "contactLastName": "Silva",
+  "contactEmail": "joao@email.com",
+  "contactPhoneNumber": "11999999999",
+  "dateCreated": "2025-11-27T10:30:00Z",
+  "suburb": "São Paulo",
+  "category": "Tecnologia",
+  "description": "Venda de software",
+  "price": 900.00,
+  "status": "Accepted"
+}
+\`\`\`
+
+### 3. Criar Novo Lead
+\`\`\`
+POST /leads
+\`\`\`
+
+**Body (JSON):**
+\`\`\`json
+{
+  "contactFirstName": "Maria",
+  "contactLastName": "Santos",
+  "contactEmail": "maria@email.com",
+  "contactPhoneNumber": "21987654321",
+  "suburb": "Rio de Janeiro",
+  "category": "Imóvel",
+  "description": "Propriedade comercial",
+  "price": 1500.00
+}
+\`\`\`
+
+**Resposta (201 Created):**
+\`\`\`json
+{
+  "id": 2
+}
+\`\`\`
+
+### 4. Aceitar Lead
+\`\`\`
+POST /leads/{id}/accept
+\`\`\`
+
+**Parâmetros:**
+- \`id\` (int): ID do lead
+
+**Comportamento:**
+- Muda status para "Accepted"
+- Se preço > $500, aplica 10% de desconto
+- Envia email para vendas@test.com
+
+**Resposta (200 OK):**
+\`\`\`json
+{
+  "message": "Lead 1 accepted successfully"
+}
+\`\`\`
+
+### 5. Recusar Lead
+\`\`\`
+POST /leads/{id}/decline
+\`\`\`
+
+**Parâmetros:**
+- \`id\` (int): ID do lead
+
+**Resposta (200 OK):**
+\`\`\`json
+{
+  "message": "Lead 1 declined successfully"
+}
+\`\`\`
+
+## Códigos de Erro
+
+| Código | Significado |
+|--------|-------------|
+| 200 | OK - Requisição bem sucedida |
+| 201 | Created - Recurso criado |
+| 400 | Bad Request - Dados inválidos |
+| 404 | Not Found - Recurso não encontrado |
+| 500 | Internal Server Error - Erro no servidor |
+
+## Exemplo de Fluxo Completo
+
+\`\`\`bash
+# 1. Criar um novo lead
+curl -X POST https://localhost:7000/api/v1/leads \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "contactFirstName": "Pedro",
+    "suburb": "Brasília",
+    "category": "Serviços",
+    "description": "Consultoria",
+    "price": 600
+  }'
+
+# Resposta: { "id": 3 }
+
+# 2. Listar leads convidados
+curl https://localhost:7000/api/v1/leads/status/Invited
+
+# 3. Aceitar o lead (com desconto aplicado)
+curl -X POST https://localhost:7000/api/v1/leads/3/accept
+
+# 4. Verificar se foi aceito
+curl https://localhost:7000/api/v1/leads/3
+
+# Resposta mostrará price reduzido para 540 (10% desconto de 600)
+\`\`\`
+*/

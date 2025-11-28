@@ -1,0 +1,142 @@
+.lead-card {
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.lead-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.lead-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.lead-info-header {
+  flex: 1;
+}
+
+.lead-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #134252;
+  margin-bottom: 4px;
+}
+
+.lead-id {
+  font-size: 12px;
+  color: #626c70;
+  background: #f5f5f5;
+  padding: 2px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.lead-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.lead-status.invited {
+  background: #faf5f1;
+  color: #a84b2f;
+}
+
+.lead-status.accepted {
+  background: #e8f5f1;
+  color: #208091;
+}
+
+.lead-status.declined {
+  background: #fef0f0;
+  color: #c0152f;
+}
+
+.lead-card-body {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.lead-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.lead-field label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #626c70;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  letter-spacing: 0.5px;
+}
+
+.lead-field p {
+  font-size: 14px;
+  color: #134252;
+  margin: 0;
+}
+
+.lead-field .price {
+  font-size: 18px;
+  font-weight: 600;
+  color: #208091;
+}
+
+.lead-card-footer {
+  display: flex;
+  gap: 10px;
+  border-top: 1px solid #f0f0f0;
+  padding-top: 12px;
+}
+
+.btn {
+  flex: 1;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-accept {
+  background: #208091;
+  color: white;
+}
+
+.btn-accept:hover:not(:disabled) {
+  background: #1a7478;
+  transform: translateY(-1px);
+}
+
+.btn-decline {
+  background: #f5f5f5;
+  color: #c0152f;
+}
+
+.btn-decline:hover:not(:disabled) {
+  background: #f0f0f0;
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

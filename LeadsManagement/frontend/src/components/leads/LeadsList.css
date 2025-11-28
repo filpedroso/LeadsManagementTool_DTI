@@ -1,0 +1,26 @@
+.leads-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.leads-list-empty,
+.leads-list-error {
+  padding: 40px 20px;
+  text-align: center;
+  background: white;
+  border-radius: 8px;
+  color: #626c70;
+  border: 1px dashed #e0e0e0;
+}
+
+.leads-list-error {
+  color: #c0152f;
+  background: #fef0f0;
+  border-color: #f0d0d0;
+}
+
+.leads-list-empty p,
+.leads-list-error p {
+  margin: 0;
+  font-size: 16px;
+}

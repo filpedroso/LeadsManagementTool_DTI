@@ -1,0 +1,41 @@
+# IDE
+.vs/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Build output
+bin/
+obj/
+dist/
+build/
+
+# Dependencies
+node_modules/
+packages/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Database
+*.mdf
+*.ldf
+
+# Logs
+logs/
+*.log
+
+# Runtime
+/emails/
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Package manager locks
+package-lock.json
+yarn.lock
