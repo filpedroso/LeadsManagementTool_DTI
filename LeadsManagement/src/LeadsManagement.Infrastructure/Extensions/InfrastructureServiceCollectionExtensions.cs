@@ -1,6 +1,7 @@
 using LeadsManagement.Infrastructure.Data.Contexts;
 using LeadsManagement.Infrastructure.Data.Repositories;
 using LeadsManagement.Infrastructure.Services;
+using LeadsManagement.Domain.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

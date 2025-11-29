@@ -2,9 +2,7 @@ namespace LeadsManagement.Application.Features.Leads.Commands;
 
 using MediatR;
 
-/// <summary>
-/// Command para aceitar um Lead
-/// </summary>
+// Command to accept a Lead
 public class AcceptLeadCommand : IRequest<Unit>
 {
     public int LeadId { get; set; }

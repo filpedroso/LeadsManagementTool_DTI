@@ -6,23 +6,18 @@ using LeadsManagement.Domain.Entities;
 using LeadsManagement.Domain.ValueObjects;
 using LeadsManagement.Domain.Enums;
 
-/// <summary>
-/// Configuração Fluent API para a entidade Lead
-/// Define mapeamento com banco de dados
-/// </summary>
+// Configures the mapping between object and DB
+// for the Entity Framework
 public class LeadConfiguration : IEntityTypeConfiguration<Lead>
 {
     public void Configure(EntityTypeBuilder<Lead> builder)
     {
-        // Tabela
         builder.ToTable("Leads");
-
-        // Chave primária
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id)
             .ValueGeneratedOnAdd();
 
-        // Contact (Value Object) - Componente de valor
+        // Contact (Value Object)
         builder.OwnsOne(x => x.Contact, contact =>
         {
             contact.Property(c => c.FirstName)
@@ -43,7 +38,7 @@ public class LeadConfiguration : IEntityTypeConfiguration<Lead>
                 .HasMaxLength(255);
         });
 
-        // Price (Value Object) - Componente de valor
+        // Price (Value Object)
         builder.OwnsOne(x => x.Price, price =>
         {
             price.Property(p => p.Amount)
@@ -57,7 +52,6 @@ public class LeadConfiguration : IEntityTypeConfiguration<Lead>
                 .IsRequired();
         });
 
-        // Propriedades simples
         builder.Property(x => x.DateCreated)
             .IsRequired()
             .HasDefaultValueSql("GETUTCDATE()");
@@ -82,7 +76,6 @@ public class LeadConfiguration : IEntityTypeConfiguration<Lead>
             .IsRequired()
             .HasDefaultValue(LeadStatus.Invited);
 
-        // Índices
         builder.HasIndex(x => x.Status).HasDatabaseName("IX_Lead_Status");
         builder.HasIndex(x => x.DateCreated).HasDatabaseName("IX_Lead_DateCreated");
     }

@@ -2,13 +2,10 @@ namespace LeadsManagement.Infrastructure.Data.Repositories;
 
 using System.Linq.Expressions;
 using LeadsManagement.Infrastructure.Data.Contexts;
+using LeadsManagement.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
-/// <summary>
-/// Implementação base do repositório genérico
-/// Fornece operações CRUD comuns
-/// </summary>
-/// <typeparam name="TEntity">Tipo da entidade</typeparam>
+// Generic base class that provides common database operations for any entity type
 public class RepositoryBase<TEntity> : IRepository<TEntity> where TEntity : class
 {
     protected readonly ApplicationDbContext? Context;

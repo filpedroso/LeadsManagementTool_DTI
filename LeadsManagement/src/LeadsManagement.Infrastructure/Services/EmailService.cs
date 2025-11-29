@@ -1,6 +1,7 @@
 namespace LeadsManagement.Infrastructure.Services;
 
 using Microsoft.Extensions.Logging;
+using LeadsManagement.Domain.Services;
 using System.Text;
 
 /// <summary>
