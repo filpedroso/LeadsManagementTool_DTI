@@ -45,3 +45,12 @@
 
 ** Bom de Ter (Super Avançado)
     •Usar EventSourcing
+
+
+
+LISTA DE TAREFAS:
+
+-Organizar o DDD (de acordo com última resposta do perplexity)
+-Remover Lógica para get lead by ID?
+-Limpar todos os comentários de AI, substituir por meus em inglês
+-Remover logica para guia "Declined"

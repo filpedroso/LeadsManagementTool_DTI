@@ -1,9 +1,7 @@
 namespace LeadsManagement.Domain.ValueObjects;
 
-/// <summary>
-/// Value Object que representa um valor monetário
-/// Encapsula lógica de negócio relacionada a preços
-/// </summary>
+// Value Object for Money and its business logic
+// "init" is a init-only setter method
 public record Money
 {
     public decimal Amount { get; init; }
@@ -18,11 +16,8 @@ public record Money
         Currency = currency;
     }
 
-    /// <summary>
-    /// Aplica desconto ao valor
-    /// </summary>
-    /// <param name="discountPercentage">Percentual de desconto (0-1)</param>
-    /// <returns>Novo Money com desconto aplicado</returns>
+    // Method for applying discount to itself 
+    // and returning the new Money object with the discount applied
     public Money ApplyDiscount(decimal discountPercentage)
     {
         if (discountPercentage < 0 || discountPercentage > 1)

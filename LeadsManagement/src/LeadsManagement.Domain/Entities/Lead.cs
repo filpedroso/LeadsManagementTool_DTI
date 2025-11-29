@@ -3,7 +3,7 @@ namespace LeadsManagement.Domain.Entities;
 using Enums;
 using ValueObjects;
 
-// Entidade Lead -> 
+// Lead entity class
 public class Lead
 {
     public int Id { get; private set; }
@@ -22,8 +22,21 @@ public class Lead
 
     public LeadStatus Status { get; private set; }
 
-    // Construtores
-    private Lead() { }
+    // Constructors
+
+    // Parameterless ctor for Entity Framework, who runs the query,
+    // uses reflection to create an empty Lead with the parameterless ctor, 
+    // uses private setters (above) for "hidrating" the Lead,
+    // filling it appropriately with DB data, from a previous mapping object-DB
+    // null! value tells the compiler that the object will be filled with non null values
+    private Lead()
+    {
+        Contact = null!;
+        Suburb = null!;
+        Category = null!;
+        Description = null!;
+        Price = null!;
+    }
 
     public Lead(
         Contact contact,
@@ -41,7 +54,7 @@ public class Lead
         DateCreated = DateTime.UtcNow;
     }
 
-    // Aplica desconto se preço > $500
+    // Applies discount if > $500 upon acceptance
     public void Accept()
     {
         if (Status != LeadStatus.Invited)

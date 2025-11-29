@@ -49,16 +49,14 @@ LeadsManagementAPI/
 │   │   ├── LeadsManagement.Application.csproj
 │   │
 │   ├── LeadsManagement.Domain/                 # Domain Layer (Entities & Business Rules)
-│   │   ├── Entities/
+│   │   ├── Entities/                           # Innermost Layer, agnostic to DB, API or UI types
 │   │   │   └── Lead.cs
 │   │   ├── Enums/
 │   │   │   └── LeadStatus.cs
 │   │   ├── ValueObjects/
 │   │   │   ├── Money.cs
 │   │   │   └── Contact.cs
-│   │   ├── Events/
-│   │   │   ├── LeadAcceptedEvent.cs
-│   │   │   └── LeadDeclinedEvent.cs
+│   │   │
 │   │   └── LeadsManagement.Domain.csproj
 │   │
 │   └── LeadsManagement.Infrastructure/         # Infrastructure Layer

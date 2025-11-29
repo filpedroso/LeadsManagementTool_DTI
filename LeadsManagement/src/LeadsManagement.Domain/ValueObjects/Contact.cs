@@ -1,8 +1,6 @@
 namespace LeadsManagement.Domain.ValueObjects;
 
-/// <summary>
-/// Value Object que representa as informações de contato
-/// </summary>
+// Record Contact - works like a class, but is init-only (immutable)
 public record Contact
 {
     public string FirstName { get; init; }
