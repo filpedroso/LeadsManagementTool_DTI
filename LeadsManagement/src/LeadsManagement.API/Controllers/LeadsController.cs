@@ -6,10 +6,7 @@ using LeadsManagement.Application.Features.Leads.Commands;
 using LeadsManagement.Application.Features.Leads.Queries;
 using LeadsManagement.Application.Features.Leads.DTOs;
 
-/// <summary>
-/// API Controller para gerenciar Leads
-/// Expõe endpoints REST para operações CRUD
-/// </summary>
+// API controller that exposes REST endpoints for CRUD operations
 [ApiController]
 [Route("api/v1/[controller]")]
 [Produces("application/json")]
@@ -24,15 +21,11 @@ public class LeadsController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
-    /// GET: api/v1/leads/status/{status}
-    /// Busca todos os leads com um status específico
-    /// </summary>
-    /// <param name="status">Status do lead (Invited, Accepted, Declined)</param>
-    /// <returns>Lista de leads com o status especificado</returns>
+
+    // GET: api/v1/leads/status/{status}
+    // Searches Leads by status (Invited, Accepted, Declined)
+    // returning a list of Leads with {status}
     [HttpGet("status/{status}")]
-    // [ProduceResponseType(StatusCodes.Status200OK)]
-    // [ProduceResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<List<LeadDto>>> GetLeadsByStatus(string status)
     {
         try
@@ -52,15 +45,8 @@ public class LeadsController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// GET: api/v1/leads/{id}
-    /// Busca um lead específico por ID
-    /// </summary>
-    /// <param name="id">ID do lead</param>
-    /// <returns>Dados do lead</returns>
+    // Searches a Lead by its ID
     [HttpGet("{id}")]
-    // [ProduceResponseType(StatusCodes.Status200OK)]
-    // [ProduceResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<LeadDto>> GetLeadById(int id)
     {
         try
@@ -85,15 +71,9 @@ public class LeadsController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// POST: api/v1/leads
-    /// Cria um novo lead
-    /// </summary>
-    /// <param name="dto">Dados do novo lead</param>
-    /// <returns>ID do lead criado</returns>
+    // Creates a new Lead for testing purposes
+    // Accessed only by Swagger UI (not by the Frontend)
     [HttpPost]
-    // [ProduceResponseType(StatusCodes.Status201Created)]
-    // [ProduceResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult<int>> CreateLead([FromBody] CreateLeadDto dto)
     {
         try
@@ -129,17 +109,8 @@ public class LeadsController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// POST: api/v1/leads/{id}/accept
-    /// Aceita um lead e aplica desconto se aplicável
-    /// Envia notificação por email
-    /// </summary>
-    /// <param name="id">ID do lead</param>
-    /// <returns>Confirmação de aceitação</returns>
+    // Accepts a Lead, returning a confirmation message
     [HttpPost("{id}/accept")]
-    // [ProduceResponseType(StatusCodes.Status200OK)]
-    // [ProduceResponseType(StatusCodes.Status404NotFound)]
-    // [ProduceResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> AcceptLead(int id)
     {
         try
@@ -164,16 +135,8 @@ public class LeadsController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// POST: api/v1/leads/{id}/decline
-    /// Recusa um lead
-    /// </summary>
-    /// <param name="id">ID do lead</param>
-    /// <returns>Confirmação de recusa</returns>
+    // Declines a Lead, returning a confirmation message
     [HttpPost("{id}/decline")]
-    // [ProduceResponseType(StatusCodes.Status200OK)]
-    // [ProduceResponseType(StatusCodes.Status404NotFound)]
-    // [ProduceResponseType(StatusCodes.Status400BadRequest)]
     public async Task<ActionResult> DeclineLead(int id)
     {
         try
