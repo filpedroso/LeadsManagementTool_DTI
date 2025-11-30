@@ -2,7 +2,6 @@ namespace LeadsManagement.API.Controllers;
 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using LeadsManagement.Application.Common.Models;
 using LeadsManagement.Application.Features.Leads.Commands;
 using LeadsManagement.Application.Features.Leads.Queries;
 using LeadsManagement.Application.Features.Leads.DTOs;

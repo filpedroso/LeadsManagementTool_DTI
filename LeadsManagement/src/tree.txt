@@ -1,0 +1,73 @@
+.
+├── LeadsManagement.API
+│   ├── Controllers
+│   │   └── LeadsController.cs
+│   ├── LeadsManagement.API.csproj
+│   ├── LeadsManagement.API.http
+│   ├── Program.cs
+│   ├── Properties
+│   │   └── launchSettings.json
+│   └── appsettings.json
+├── LeadsManagement.Application
+│   ├── Leads
+│   │   ├── Commands
+│   │   │   ├── AcceptLeadCommand.cs
+│   │   │   ├── AcceptLeadCommandHandler.cs
+│   │   │   ├── CreateLeadCommand.cs
+│   │   │   ├── CreateLeadCommandHandler.cs
+│   │   │   ├── DeclineLeadCommand.cs
+│   │   │   └── DeclineLeadCommandHandler.cs
+│   │   ├── DTOs
+│   │   │   ├── CreateLeadDto.cs
+│   │   │   └── LeadDto.cs
+│   │   └── Queries
+│   │       ├── GetLeadByIdQuery.cs
+│   │       ├── GetLeadByIdQueryHandler.cs
+│   │       ├── GetLeadsByStatusQuery.cs
+│   │       └── GetLeadsByStatusQueryHandler.cs
+│   ├── LeadsManagement.Application.csproj
+│   └── tree.txt
+├── LeadsManagement.Domain
+│   ├── Entities
+│   │   └── Lead.cs
+│   ├── Enums
+│   │   └── LeadStatus.cs
+│   ├── LeadsManagement.Domain.csproj
+│   ├── Services
+│   │   └── IEmailService.cs
+│   └── ValueObjects
+│       ├── Contact.cs
+│       └── Money.cs
+├── LeadsManagement.Infrastructure
+│   ├── Data
+│   │   ├── Configurations
+│   │   │   └── LeadConfiguration.cs
+│   │   ├── Contexts
+│   │   │   └── ApplicationDbContext.cs
+│   │   └── Repositories
+│   │       └── LeadRepository.cs
+│   ├── Extensions
+│   ├── LeadsManagement.Infrastructure.csproj
+│   ├── Migrations
+│   │   ├── 20251129233053_InitialCreate.Designer.cs
+│   │   ├── 20251129233053_InitialCreate.cs
+│   │   └── ApplicationDbContextModelSnapshot.cs
+│   ├── Services
+│   │   └── EmailService.cs
+│   └── tree.txt
+├── LeadsManagement.Tests
+│   ├── Domain
+│   │   └── LeadTests.cs
+│   ├── Features
+│   │   └── Leads
+│   │       ├── Commands
+│   │       │   ├── AcceptLeadCommandHandlerTests.cs
+│   │       │   ├── CreateLeadCommandHandlerTests.cs
+│   │       │   └── DeclineLeadCommandHandlerTests.cs
+│   │       └── Queries
+│   │           ├── GetLeadByIdQueryHandlerTests.cs
+│   │           └── GetLeadsByStatusQueryHandlerTests.cs
+│   └── LeadsManagement.Tests.csproj
+└── tree.txt
+
+28 directories, 43 files

@@ -1,0 +1,27 @@
+.
+├── Common
+│   └── Models
+│       ├── ApiException.cs
+│       └── Result.cs
+├── Features
+│   └── Leads
+│       ├── Commands
+│       │   ├── AcceptLeadCommand.cs
+│       │   ├── AcceptLeadCommandHandler.cs
+│       │   ├── CreateLeadCommand.cs
+│       │   ├── CreateLeadCommandHandler.cs
+│       │   ├── DeclineLeadCommand.cs
+│       │   └── DeclineLeadCommandHandler.cs
+│       ├── DTOs
+│       │   ├── CreateLeadDto.cs
+│       │   └── LeadDto.cs
+│       └── Queries
+│           ├── GetLeadByIdQuery.cs
+│           ├── GetLeadByIdQueryHandler.cs
+│           ├── GetLeadsByStatusQuery.cs
+│           └── GetLeadsByStatusQueryHandler.cs
+├── LeadsManagement.Application.csproj
+├── ServiceCollectionExtensions.cs
+└── tree.txt
+
+8 directories, 17 files
