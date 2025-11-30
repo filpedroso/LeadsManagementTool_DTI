@@ -2,37 +2,27 @@
 
 A full-stack lead management single-page app
 
-| Tech | Stack |
-|------|-------|
-| Backend | .NET 6 |
-| Frontend | React |
-| Database | SQL Server |
+**Backend** - .NET 6  
+**Frontend** - React  
+**Database** - SQL Server
 
 ## Backend Design Choices
 
 ### CQRS with MediatR
-
-Write operations (commands) are separated from read operations (queries). Each handler follows the single responsibility principle.
+Write operations (commands) are separated from read operations (queries), and each handler follow the single-responsability principle.
 
 ### Domain Driven Design (DDD)
+Applies a buisiness-like architecture in the software with segregation of concerns, where the layers:
 
-Applies business-focused architecture with clear separation of concerns across layers:
-
-- **API Layer:** Handles HTTP requests and exposes REST endpoints for CRUD operations.
-
-- **Application Layer:** Implements CQRS operations—Commands (Write) and Queries (Read). Also defines DTOs (Data Transfer Objects) that safely transfer data between layers without exposing internal business logic.
-
-- **Domain Layer:** Contains business logic and rules. Defines the `Lead` entity, its ValueObjects (`Contact`, `Money`), and the `IEmailService` interface for notifications.
-
-- **Infrastructure Layer:** Manages persistence and database state using SQL Server. Uses Entity Framework Core (ORM) to map SQL queries to object-oriented syntax, keeping database concerns isolated from business logic.
-
----
+- **API**: handles HTTP requests, exposing the REST endpoints for CRUD operations.
+- **Application**: implements the main CQRS operations - Commands (Write) and Queries(Read). Also provides DTOs (Data Transfer Objects) objects created from these operations that safely transfer data through layers without exposing business logic
+- **Domain**: where the business logic resides, with the Lead entity class definition and its ValueObjects (Money, Contact), and a mock email service.
+- **Infrastructure**: controls the database (SQL Server) and the persistence and state of data. Uses the Entity Framework ORM (Object Relational Mapping) which maps SQL queries to object-oriented syntax. Keeps database concerns isolated from business logic.
 
 ## Start Guide
 
-Follow these steps to get the project running on a fresh machine.
-
-*(Tested on MacBook Pro mid 2015 - macOS 12.4 Monterey)*
+Follow these steps to get the project running on a fresh machine
+(Tested on a MacBook Pro mid 2015 - Macos 12.4 Monterey)
 
 ### Prerequisites
 
@@ -43,7 +33,7 @@ Follow these steps to get the project running on a fresh machine.
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/filpedroso/LeadsManagementTool_DTI.git
+git clone [https://github.com/filpedroso/LeadsManagementTool_DTI.git](https://github.com/filpedroso/LeadsManagementTool_DTI.git)
 cd LeadsManagementTool_DTI/LeadsManagement
 ```
 
@@ -108,21 +98,14 @@ npm run dev
 
 The frontend will be available at: **http://localhost:3000**
 
----
-
-## API Endpoints
-
-Access via Swagger UI at `/swagger`
+## API Endpoints - via Swagger UI
 
 ### Leads
-
 - `GET /api/v1/Leads/status/{status}` - Get leads by status (Invited, Accepted, Declined)
 - `GET /api/v1/Leads/{id}` - Get specific lead by its ID
 - `POST /api/v1/Leads` - Create a lead (for testing purposes)
 - `POST /api/v1/Leads/{id}/accept` - Accept a lead
 - `POST /api/v1/Leads/{id}/decline` - Decline a lead
-
----
 
 ## Database Configuration
 
@@ -136,33 +119,29 @@ The connection string is configured in `src/LeadsManagement.API/appsettings.json
 }
 ```
 
----
-
 ## Project Structure
 
 ```
 LeadsManagement/
 ├── src/
-│   ├── LeadsManagement.API/              # Web API layer
-│   ├── LeadsManagement.Application/      # Application layer (CQRS)
-│   ├── LeadsManagement.Domain/           # Domain entities and value objects
-│   └── LeadsManagement.Infrastructure/   # Data access and services
-├── LeadsManagement.Tests/                # Unit tests
-└── frontend/
+│   ├── LeadsManagement.API/          # Web API layer
+│   ├── LeadsManagement.Application/   # Application layer (CQRS)
+│   ├── LeadsManagement.Domain/        # Domain entities and value objects
+│   └── LeadsManagement.Infrastructure/ # Data access and services
+├── tests/
+│   └── LeadsManagement.Tests/         # Unit tests
+├── frontend/
     ├── src/
-    │   ├── api/                          # API client
-    │   ├── components/                   # React components
-    │   ├── hooks/                        # Custom hooks
-    │   └── test/                         # Test utilities
+    │   ├── api/                       # API client
+    │   ├── components/                # React components
+    │   ├── hooks/                     # Custom hooks
+    │   └── test/                      # Test utilities
     └── package.json
 ```
-
----
 
 ## Development Notes
 
 ### Frontend Architecture
-
 - **React 18** with functional components and hooks
 - **Vite** for fast development and building
 - **Axios** for HTTP requests
@@ -170,13 +149,10 @@ LeadsManagement/
 - **Vitest + Testing Library** for testing
 
 ### Business Rules
-
 - Leads have three statuses: Invited, Accepted, Declined
 - Accepted leads receive a 10% discount if price > $500
 - Email notifications sent on lead acceptance (fake service for testing)
 - Full contact information only visible for Accepted/Declined leads
-
----
 
 **Fil Pedroso**  
 GitHub: [@filpedroso](https://github.com/filpedroso)
