@@ -9,9 +9,9 @@ using LeadsManagement.Infrastructure.Data.Repositories;
 /// </summary>
 public class DeclineLeadCommandHandler : IRequestHandler<DeclineLeadCommand, Unit>
 {
-    private readonly LeadRepository _leadRepository;
+    private readonly ILeadRepository _leadRepository;
 
-    public DeclineLeadCommandHandler(LeadRepository leadRepository)
+    public DeclineLeadCommandHandler(ILeadRepository leadRepository)
     {
         _leadRepository = leadRepository;
     }

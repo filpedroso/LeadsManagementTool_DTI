@@ -11,9 +11,9 @@ using LeadsManagement.Infrastructure.Data.Repositories;
 /// </summary>
 public class CreateLeadCommandHandler : IRequestHandler<CreateLeadCommand, int>
 {
-    private readonly LeadRepository _leadRepository;
+    private readonly ILeadRepository _leadRepository;
 
-    public CreateLeadCommandHandler(LeadRepository leadRepository)
+    public CreateLeadCommandHandler(ILeadRepository leadRepository)
     {
         _leadRepository = leadRepository;
     }

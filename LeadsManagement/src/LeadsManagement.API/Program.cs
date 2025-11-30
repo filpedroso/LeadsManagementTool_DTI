@@ -31,7 +31,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     .LogTo(Console.WriteLine, LogLevel.Information));
 
 // 4. Dependencies
-builder.Services.AddScoped<LeadRepository>();
+builder.Services.AddScoped<ILeadRepository, LeadRepository>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 
 // 5. CORS

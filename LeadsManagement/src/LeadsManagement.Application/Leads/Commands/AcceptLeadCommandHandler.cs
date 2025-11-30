@@ -9,10 +9,10 @@ using Mapster;
 // and send an email notification to "vendas@test.com"
 public class AcceptLeadCommandHandler : IRequestHandler<AcceptLeadCommand, Unit>
 {
-    private readonly LeadRepository _leadRepository;
+    private readonly ILeadRepository _leadRepository;
     private readonly IEmailService _emailService;
 
-    public AcceptLeadCommandHandler(LeadRepository leadRepository, IEmailService emailService)
+    public AcceptLeadCommandHandler(ILeadRepository leadRepository, IEmailService emailService)
     {
         _leadRepository = leadRepository;
         _emailService = emailService;

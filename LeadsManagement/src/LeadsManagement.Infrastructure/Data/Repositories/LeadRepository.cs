@@ -6,7 +6,7 @@ using LeadsManagement.Domain.Enums;
 using LeadsManagement.Infrastructure.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 
-public class LeadRepository
+public class LeadRepository : ILeadRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly DbSet<Lead> _dbSet;

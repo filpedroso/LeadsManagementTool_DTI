@@ -11,9 +11,9 @@ using Mapster;
 /// </summary>
 public class GetLeadByIdQueryHandler : IRequestHandler<GetLeadByIdQuery, LeadDto>
 {
-    private readonly LeadRepository _leadRepository;
+    private readonly ILeadRepository _leadRepository;
 
-    public GetLeadByIdQueryHandler(LeadRepository leadRepository)
+    public GetLeadByIdQueryHandler(ILeadRepository leadRepository)
     {
         _leadRepository = leadRepository;
     }

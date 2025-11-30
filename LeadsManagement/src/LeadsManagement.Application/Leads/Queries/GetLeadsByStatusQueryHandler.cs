@@ -12,9 +12,9 @@ using Mapster;
 /// </summary>
 public class GetLeadsByStatusQueryHandler : IRequestHandler<GetLeadsByStatusQuery, List<LeadDto>>
 {
-    private readonly LeadRepository _leadRepository;
+    private readonly ILeadRepository _leadRepository;
 
-    public GetLeadsByStatusQueryHandler(LeadRepository leadRepository)
+    public GetLeadsByStatusQueryHandler(ILeadRepository leadRepository)
     {
         _leadRepository = leadRepository;
     }

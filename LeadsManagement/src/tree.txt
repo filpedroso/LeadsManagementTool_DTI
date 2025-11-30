@@ -45,6 +45,7 @@
 │   │   ├── Contexts
 │   │   │   └── ApplicationDbContext.cs
 │   │   └── Repositories
+│   │       ├── ILeadRepository.cs
 │   │       └── LeadRepository.cs
 │   ├── Extensions
 │   ├── LeadsManagement.Infrastructure.csproj
@@ -56,18 +57,21 @@
 │   │   └── EmailService.cs
 │   └── tree.txt
 ├── LeadsManagement.Tests
+│   ├── Application
+│   │   ├── Commands
+│   │   │   ├── AcceptLeadCommandHandlerTests.cs
+│   │   │   ├── CreateLeadCommandHandlerTests.cs
+│   │   │   └── DeclineLeadCommandHandlerTests.cs
+│   │   └── Queries
+│   │       ├── GetLeadByIdQueryHandlerTests.cs
+│   │       └── GetLeadsByStatusQueryHandlerTests.cs
 │   ├── Domain
-│   │   └── LeadTests.cs
-│   ├── Features
-│   │   └── Leads
-│   │       ├── Commands
-│   │       │   ├── AcceptLeadCommandHandlerTests.cs
-│   │       │   ├── CreateLeadCommandHandlerTests.cs
-│   │       │   └── DeclineLeadCommandHandlerTests.cs
-│   │       └── Queries
-│   │           ├── GetLeadByIdQueryHandlerTests.cs
-│   │           └── GetLeadsByStatusQueryHandlerTests.cs
+│   │   ├── Entities
+│   │   │   └── LeadTests.cs
+│   │   └── ValueObjects
+│   │       ├── ContactTests.cs
+│   │       └── MoneyTests.cs
 │   └── LeadsManagement.Tests.csproj
 └── tree.txt
 
-28 directories, 43 files
+29 directories, 46 files
