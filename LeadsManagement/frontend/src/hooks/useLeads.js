@@ -29,6 +29,42 @@ export const useLeads = (status) => {
   return { leads, loading, error, refetch }
 }
 
+export const useLeadCounts = () => {
+  const [counts, setCounts] = useState({
+    Invited: 0,
+    Accepted: 0,
+    Declined: 0,
+  })
+
+  const fetchCounts = async () => {
+    try {
+      const statuses = ['Invited', 'Accepted', 'Declined']
+      const countPromises = statuses.map(async (status) => {
+        const response = await leadsApi.getLeadsByStatus(status)
+        return { status, count: response.data.length }
+      })
+      
+      const results = await Promise.all(countPromises)
+      const newCounts = results.reduce((acc, { status, count }) => {
+        acc[status] = count
+        return acc
+      }, {})
+      
+      setCounts(newCounts)
+    } catch (err) {
+      console.error('Error fetching counts:', err)
+    }
+  }
+
+  useEffect(() => {
+    fetchCounts()
+  }, [])
+
+  const refetchCounts = () => fetchCounts()
+
+  return { counts, refetchCounts }
+}
+
 export const useLeadActions = () => {
   const [actionLoading, setActionLoading] = useState(false)
   const [actionError, setActionError] = useState(null)
