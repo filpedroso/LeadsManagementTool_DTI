@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace LeadsManagement.Application.Features.Leads.Queries;
 
 using MediatR;

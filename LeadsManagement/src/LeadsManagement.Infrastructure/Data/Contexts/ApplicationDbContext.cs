@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace LeadsManagement.Infrastructure.Data.Contexts;
 
 using Microsoft.EntityFrameworkCore;

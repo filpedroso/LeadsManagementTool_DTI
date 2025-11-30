@@ -1,3 +1,5 @@
+#nullable disable
+
 namespace LeadsManagement.Application.Features.Leads.Commands;
 
 using MediatR;
@@ -9,9 +11,9 @@ using MediatR;
 public class CreateLeadCommand : IRequest<int>
 {
     public string ContactFirstName { get; set; }
-    public string? ContactLastName { get; set; }
-    public string? ContactEmail { get; set; }
-    public string? ContactPhoneNumber { get; set; }
+    public string ContactLastName { get; set; }
+    public string ContactEmail { get; set; }
+    public string ContactPhoneNumber { get; set; }
     public string Suburb { get; set; }
     public string Category { get; set; }
     public string Description { get; set; }
